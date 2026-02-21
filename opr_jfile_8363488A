@@ -1,1 +1,43 @@
+pipeline {
+    agent any
 
+    stages {
+
+        stage('stg1-8363488A') {
+            steps {
+                echo 'stg1-8363488A: Preparation check passes'
+            }
+        }
+
+        stage('stg2-8363488A') {
+            steps {
+                echo 'Stage 2 running...'
+            }
+        }
+
+        stage('stg3-8363488A') {
+            steps {
+                echo 'stg3-8363488A: testsvr is backup and updated'
+            }
+        }
+
+        stage('stg4-8363488A') {
+            steps {
+                echo 'Stage 4 running...'
+            }
+        }
+
+        stage('stg5-8363488A') {
+            steps {
+                echo 'Stage 5 running...'
+            }
+        }
+
+        stage('stg6-8363488A') {
+            steps {
+                echo 'Stage 6 running...'
+            }
+        }
+
+    }
+}
