@@ -34,7 +34,7 @@ environment {
             steps {
                 script {
                     sh '''
-                        bolt script run opr_script_8363488a --targets testsvr_8363488a --user ubuntu --private-key /home/jenkins/.ssh/id_rsa
+                        bolt script run opr_script_8363488a --targets 172.20.113.154 --user ubuntu --private-key /home/jenkins/.ssh/id_rsa
                     '''
                     echo 'stg3_8363488a: testsvr is backup and updated'
                 }
@@ -62,7 +62,7 @@ environment {
             steps {
                 script {
                     sh '''
-                        bolt script run opr_script_8363488a --targets appsvr_8363488a --user ubuntu --private-key /home/jenkins/.ssh/id_rsa
+                        bolt script run opr_script_8363488a --targets 172.20.113.154 --user ubuntu --private-key /home/jenkins/.ssh/id_rsa
                     '''
                     echo 'stg5_8363488A: appsvr web server is backup and updated'
                 }
