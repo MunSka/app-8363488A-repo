@@ -9,12 +9,11 @@ puppet resource file /tmp/work/8363488a \
   recurse=true \
   force=true
 
-puppet resource file /tmp/work/8363488a \
-  ensure=directory
+puppet resource file /tmp/work/8363488a ensure=directory
 
-cd /tmp/work/8363488a
+cd /tmp/work/8363488a || { echo "Directory /tmp/work/8363488a missing"; exit 1; }
 
-git clone https://github.com/MunSka/app-8363488a-repo.git .
+git clone git@github.com:MunSka/app-8363488a-repo.git .
 
 puppet resource file /var/www/html/index.html \
   ensure=file \
