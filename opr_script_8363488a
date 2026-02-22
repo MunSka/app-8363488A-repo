@@ -1,0 +1,24 @@
+#!/bin/bash
+
+puppet resource package apache2 ensure=installed
+
+puppet resource service apache2 ensure=running enable=true
+
+puppet resource file /tmp/work/8363488a \
+  ensure=absent \
+  recurse=true \
+  force=true
+
+puppet resource file /tmp/work/8363488a \
+  ensure=directory
+
+cd /tmp/work/8363488a
+
+git clone https://github.com/MunSka/app-8363488a-repo.git .
+
+puppet resource file /var/www/html/index.html \
+  ensure=file \
+  source=/tmp/work/8363488a/new_8363488a_index.html \
+  owner=root \
+  group=root \
+  mode=0644
