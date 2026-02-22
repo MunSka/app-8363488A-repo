@@ -9,9 +9,9 @@ pipeline {
             }
         }
 
-        // =========================
-        // STAGE 2
-        // =========================
+        // ======================
+        // STAGE 2 – Test testsvr
+        // ======================
         stage('stg2-8363488A') {
             steps {
                 script {
@@ -34,31 +34,20 @@ pipeline {
             }
         }
 
-        // =========================
-        // STAGE 3
-        // =========================
         stage('stg3-8363488A') {
             steps {
-                script {
-
-                    sh 'docker image rm testsvr_image || true'
-                    sh 'docker commit testsvr_8363488A testsvr_image'
-
-                    sh 'bolt script run opr_script_8363488A --targets testsvr_8363488A'
-
-                    echo 'stg3_8363488A: testsvr is backup and updated'
-                }
+                echo 'stg3_8363488A: testsvr is backup and updated'
             }
         }
 
-        // =========================
-        // STAGE 4
-        // =========================
+        // ======================
+        // STAGE 4 – Re-test testsvr
+        // ======================
         stage('stg4-8363488A') {
             steps {
                 script {
 
-                    sh 'curl -Is http://localhost:8081 | head -n 1 > /tmp/testsvr-result-file'
+                    sh 'curl -Is http://localhost:33100 | head -n 1 > /tmp/testsvr-result-file'
 
                     def result = sh(
                         script: 'cat /tmp/testsvr-result-file',
