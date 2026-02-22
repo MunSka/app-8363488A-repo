@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
 
-                    sh 'curl -Is http://localhost:8081 | head -n 1 > /tmp/testsvr-result-file'
+                    sh 'curl -Is http://localhost:33100 | head -n 1 > /tmp/testsvr-result-file'
 
                     def result = sh(
                         script: 'cat /tmp/testsvr-result-file',
