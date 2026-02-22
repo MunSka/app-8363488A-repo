@@ -9,9 +9,6 @@ pipeline {
             }
         }
 
-        // ======================
-        // STAGE 2 – Test testsvr
-        // ======================
         stage('stg2-8363488A') {
             steps {
                 script {
@@ -40,9 +37,6 @@ pipeline {
             }
         }
 
-        // ======================
-        // STAGE 4 – Re-test testsvr
-        // ======================
         stage('stg4-8363488A') {
             steps {
                 script {
