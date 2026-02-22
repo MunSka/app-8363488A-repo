@@ -1,13 +1,21 @@
 #!/bin/bash
+set -e
 
-sudo puppet resource package apache2 ensure=installed
-sudo puppet resource service apache2 ensure=running
+CONTAINER="$1"
+if [ -z "$CONTAINER" ]; then
+  echo "Usage: $0 <container_name>"
+  exit 2
+fi
 
-sudo rm -rf /tmp/work/8363488a
-sudo mkdir -p /tmp/work/8363488a
+WORKDIR="/tmp/work/8363488a"
 
-sudo git clone https://github.com/MunSka/app-8363488a-repo.git /tmp/work/8363488a
+sudo rm -rf "$WORKDIR"
+sudo mkdir -p "$WORKDIR"
+sudo git clone https://github.com/MunSka/app-8363488a-repo.git "$WORKDIR"
 
-sudo cp /tmp/work/8363488a/new_8363488a_index.html /var/www/html/index.html
-sudo chown www-data:www-data /var/www/html/index.html
-sudo chmod 644 /var/www/html/index.html
+sudo docker exec "$CONTAINER" bash -lc "puppet resource package apache2 ensure=installed"
+sudo docker exec "$CONTAINER" bash -lc "puppet resource service apache2 ensure=running"
+
+sudo docker exec "$CONTAINER" bash -lc "rm -rf /tmp/work/8363488a && mkdir -p /tmp/work/8363488a"
+sudo docker cp "$WORKDIR/new_8363488a_index.html" "$CONTAINER":/var/www/html/index.html
+sudo docker exec "$CONTAINER" bash -lc "chown www-data:www-data /var/www/html/index.html && chmod 644 /var/www/html/index.html"
