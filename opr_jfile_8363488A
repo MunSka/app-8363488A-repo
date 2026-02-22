@@ -2,7 +2,9 @@ pipeline {
     agent any
 
 environment {
-    PATH = "/opt/puppetlabs/bin/bolt"
+    PATH = "environment {
+    PATH = "/opt/puppetlabs/bin:${env.PATH}"
+}"
 }
 
     stages {
