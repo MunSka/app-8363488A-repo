@@ -11,8 +11,26 @@ pipeline {
 
         stage('stg2-8363488A') {
             steps {
-                echo 'Stage 2 running...'
-            }
+                script {
+                    sh """
+                    curl -Is http://localhost:8081 | head -n 1 > /tmp/testsvr-result-file
+                    """
+
+                    def result = sh(
+                        script: "cat /tmp/testsvr-result-file",
+                        returnStdout: true
+                    ).trim()
+
+                    if (result.contains("200")) {
+                        echo "stg2_8363488A: testsvr’s website is running"
+
+                        input message: "Proceed to update testsvr server?"
+
+                    } else {
+                        echo "stg2_8363488A: testsvr’s website is down"
+                        error("Aborting pipeline because testsvr is down.")
+                    }
+                }            }
         }
 
         stage('stg3-8363488A') {
@@ -23,8 +41,24 @@ pipeline {
 
         stage('stg4-8363488A') {
             steps {
-                echo 'Stage 4 running...'
-            }
+                    sh """
+                    curl -Is http://localhost:8081 | head -n 1 > /tmp/testsvr-result-file
+                    """
+
+                    def result = sh(
+                        script: "cat /tmp/testsvr-result-file",
+                        returnStdout: true
+                    ).trim()
+
+                    if (result.contains("200")) {
+                        echo "stg4_8363488A: testsvr’s website is running after update"
+
+                        input message: "Proceed to update appsvr server?"
+
+                    } else {
+                        echo "stg4_8363488A: testsvr’s website is down"
+                        error("Aborting pipeline because updated testsvr is down.")
+                    }            }
         }
 
         stage('stg5-8363488A') {
