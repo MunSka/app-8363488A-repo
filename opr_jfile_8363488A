@@ -12,13 +12,8 @@ pipeline {
         stage('stg2-8363488A') {
             steps {
                 script {
-
                     sh 'curl -Is http://172.20.113.154:33100 | head -n 1 > /tmp/testsvr-result-file'
-
-                    def result = sh(
-                        script: 'cat /tmp/testsvr-result-file',
-                        returnStdout: true
-                    ).trim()
+                    def result = sh(script: 'cat /tmp/testsvr-result-file', returnStdout: true).trim()
 
                     if (result.contains('200')) {
                         echo 'stg2_8363488A: testsvr’s website is running'
@@ -33,23 +28,20 @@ pipeline {
 
         stage('stg3-8363488A') {
             steps {
-        script {
-
-
-            echo 'stg3_8363488a: testsvr is backup and updated'
-        }            }
+                script {
+                    sh '''
+                        bolt script run opr_script_8363488a --targets testsvr_8363488a --user ubuntu --private-key /home/jenkins/.ssh/id_rsa
+                    '''
+                    echo 'stg3_8363488a: testsvr is backup and updated'
+                }
+            }
         }
 
         stage('stg4-8363488A') {
             steps {
                 script {
-
-                    sh 'curl -Is http://localhost:33100 | head -n 1 > /tmp/testsvr-result-file'
-
-                    def result = sh(
-                        script: 'cat /tmp/testsvr-result-file',
-                        returnStdout: true
-                    ).trim()
+                    sh 'curl -Is http://172.20.113.154:33100 | head -n 1 > /tmp/testsvr-result-file'
+                    def result = sh(script: 'cat /tmp/testsvr-result-file', returnStdout: true).trim()
 
                     if (result.contains('200')) {
                         echo 'stg4_8363488A: testsvr’s website is running after update'
@@ -64,47 +56,38 @@ pipeline {
 
         stage('stg5-8363488A') {
             steps {
-        script {
-
-            echo 'stg5_8363488A: appsvr web server is backup and updated'
-        }            }
+                script {
+                    sh '''
+                        bolt script run opr_script_8363488a --targets appsvr_8363488a --user ubuntu --private-key /home/jenkins/.ssh/id_rsa
+                    '''
+                    echo 'stg5_8363488A: appsvr web server is backup and updated'
+                }
+            }
         }
 
         stage('stg6-8363488A') {
             steps {
-        script {
+                script {
+                    sh 'curl -Is http://172.20.113.154:33200 | head -n 1 > /tmp/appsvr-result-file'
+                    def result = sh(script: 'cat /tmp/appsvr-result-file', returnStdout: true).trim()
 
-            sh 'curl -Is http://172.20.113.154:33200 | head -n 1 > /tmp/appsvr-result-file'
-
-            def result = sh(
-                script: 'cat /tmp/appsvr-result-file',
-                returnStdout: true
-            ).trim()
-
-            if (result.contains('200')) {
-
-                echo 'stg6_8363488a: appsvr website is operational'
-
-            } else {
-
-                def userChoice = input(
-                    message: 'Appsvr is down. Choose action:',
-                    parameters: [
-                        choice(
-                            choices: ['Trigger roll back', 'Troubleshooting'],
-                            description: 'Select action',
-                            name: 'ACTION'
+                    if (result.contains('200')) {
+                        echo 'stg6_8363488a: appsvr website is operational'
+                    } else {
+                        def userChoice = input(
+                            message: 'Appsvr is down. Choose action:',
+                            parameters: [
+                                choice(choices: ['Trigger roll back', 'Troubleshooting'], description: 'Select action', name: 'ACTION')
+                            ]
                         )
-                    ]
-                )
-
-                if (userChoice == 'Trigger roll back') {
-                    echo 'stg6_8363488a: Production website is rolling back'
-                } else {
-                    echo 'stg6_8363488a: Troubleshooting of Production website starts'
+                        if (userChoice == 'Trigger roll back') {
+                            echo 'stg6_8363488a: Production website is rolling back'
+                        } else {
+                            echo 'stg6_8363488a: Troubleshooting of Production website starts'
+                        }
+                    }
                 }
             }
-        }            }
         }
     }
 }
